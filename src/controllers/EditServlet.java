@@ -41,6 +41,8 @@ public class EditServlet extends HttpServlet {
 
         // メッセージ情報とセッションIDをリクエストスコープに登録
         request.setAttribute("message", m);
+
+        // CSRF対策
         request.setAttribute("_token", request.getSession().getId());
 
         // メッセージIDをセッションスコープに登録

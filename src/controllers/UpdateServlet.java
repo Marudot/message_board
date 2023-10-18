@@ -14,18 +14,18 @@ import models.Message;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class CreateServlet
+ * Servlet implementation class UpdateServlet
  */
-@WebServlet("/create")
-public class CreateServlet extends HttpServlet {
+@WebServlet("/update")
+public class UpdateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateServlet() {
+    public UpdateServlet() {
         super();
-        // TODO Auto-generated constructor stub
+
     }
 
     /**
@@ -35,10 +35,12 @@ public class CreateServlet extends HttpServlet {
         String _token = request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DBUtil.createEntityManager();
-            em.getTransaction().begin();
 
-            Message m = new Message();
+            // セッションスコープからメッセージのIDを取得して
+            // 該当のIDのメッセージ1件のみをデータベースから取得
+            Message m = em.find(Message.class, (Integer)(request.getSession().getAttribute("message_id")));
 
+            // フォームの内容を各フィールドに上書き
             String title = request.getParameter("title");
             m.setTitle(title);
 
@@ -46,14 +48,17 @@ public class CreateServlet extends HttpServlet {
             m.setContent(content);
 
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            m.setCreated_at(currentTime);
-            m.setUpdated_at(currentTime);
+            m.setUpdated_at(currentTime);       // 更新日時のみ上書き
 
-            // データベースに保存
-            em.persist(m);
+            // データベースを更新
+            em.getTransaction().begin();
             em.getTransaction().commit();
             em.close();
 
+            // セッションスコープ上の不要になったデータを削除
+            request.getSession().removeAttribute("message_id");
+
+            // indexページへリダイレクト
             response.sendRedirect(request.getContextPath() + "/index");
         }
     }
