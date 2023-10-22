@@ -9,6 +9,7 @@
             </div>
         </c:if>
         <h2>メッセージ一覧</h2>
+
         <ul>
             <c:forEach var="message" items="${messages}">
                 <li>
@@ -25,10 +26,14 @@
             （全 ${messages_count} 件）<br />
             <c:forEach var="i" begin="1" end="${((messages_count - 1) / 15) + 1}" step="1">
                 <c:choose>
+                    <%-- 表示中のページの場合、リンクにしない --%>
                     <c:when test="${i == page}">
                         <c:out value="${i}" />&nbsp;
                     </c:when>
+
+                    <%-- 表示していないのページの場合、リンクにする --%>
                     <c:otherwise>
+                        <%-- 押下した場合、そのページに飛ぶ --%>
                         <a href="${pageContext.request.contextPath}/index?page=${i}"><c:out value="${i}" /></a>&nbsp;
                     </c:otherwise>
                 </c:choose>
