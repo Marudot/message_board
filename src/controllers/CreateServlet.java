@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import models.Message;
+import models.validators.MessageValidator;
 import utils.DBUtil;
-import validators.MessageValidator;
 
 /**
  * Servlet implementation class CreateServlet
